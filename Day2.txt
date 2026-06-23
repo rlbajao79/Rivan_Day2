@@ -1,0 +1,164 @@
+IMPE
+
+d1/c1:
+config t
+vlan 13
+name LTO.GOV.PH
+Interface vlan 13
+ desc LTO.GOV.PH
+ no shut
+ ip add 172.16.4.1 255.255.252.0
+exit
+ip dhcp excluded-add 172.16.4.1 172.16.4.100
+ip dhcp pool LTO.GOV.PH
+ network 172.16.4.0 255.255.252.0
+ default-router 172.16.4.1
+domain-name LTO.GOV.PH
+dns-server 8.8.8.8
+end
+sh ip dhcp binding
+@A1:
+config t
+int e0/0
+switchport mode access
+switchport access vlan 13
+do sh vlan brief
+@P1:
+config t
+int e0/0
+no ip address dhcp
+ip address dhcp
+no shut
+do bp
+do sh ip domain
+
+@C2:
+config t
+vlan 69
+name COMELEC.GOV.PH
+Interface vlan 69
+ desc COMELEC.GOV.PH
+ no shut
+ ip add 172.16.0.33 255.255.255.224
+exit
+ip dhcp excluded-add 172.16.0.33 172.16.0.35
+ip dhcp pool COMELEC.GOV.PH
+ network 172.16.0.32 255.255.255.224
+ default-router 172.16.0.33
+domain-name COMELEC.GOV.PH
+dns-server 8.8.8.8
+end
+sh ip dhcp binding
+@A2:
+config t
+int e1/0
+switchport mode access
+switchport access vlan 69
+do sh vlan brief
+@P2:
+config t
+int e1/0
+no ip address dhcp
+ip address dhcp
+no shut
+do bp
+do sh ip domain
+
+---------------
+
+@C1/D1:
+config t
+vlan 67
+name DPWH.GOV.PH
+Interface vlan 67
+ desc DPWH.GOV.PH
+ no shut
+ ip add 172.16.16.1 255.255.255.240
+exit
+ip dhcp excluded-add 172.16.16.1 172.16.16.100
+ip dhcp pool PWH.GOV.PH
+ network 172.16.16.2 255.255.255.240
+ default-router 172.16.16.1
+domain-name DPWH.GOV.PH
+dns-server 8.8.8.8
+end
+sh ip dhcp binding
+
+@D2:
+config t
+int e1/0
+switchport mode access
+switchport access vlan 67
+do sh vlan brief
+@S2:
+config t
+int e1/0
+no ip address dhcp
+ip address dhcp
+no shut
+do bp
+do sh ip domain
+
+Given
+hosts 28
+192.168.147.128/26
+convert: 28 = 5 bits
+subtract: /32 - 5bits = /27 ()
+
+-------------------
+!@C2:
+config t
+vlan 193
+name TELUS.COM
+Interface vlan 193
+ desc TELUS.COM
+ no shut
+ ip add 192.168.147.161 255.255.255.224
+exit
+ip dhcp excluded-add 192.168.147.161 192.168.147.162
+ip dhcp pool TELUS.COM
+ network 192.168.147.160 255.255.255.224
+network
+ default-router 192.168.147.161
+domain-name TELUS.COM
+dns-server 8.8.8.8
+end
+sh ip dhcp binding
+
+@D2:
+config t
+int e1/0
+switchport mode access
+switchport access vlan 67
+do sh vlan brief
+@S2:
+config t
+int e1/0
+no ip address dhcp
+ip address dhcp
+no shut
+do bp
+do sh ip domain
+
+Given
+hosts 28
+192.168.147.128/26
+convert: 28 = 5 bits
+subtract: /32 - 5bits = /27 ()
+
+-------------------
+!@CoreTaas
+conf t
+int fa0/9
+no sw
+ip add 192.168.147.161 255.255.255.224
+no shut
+end
+
+!@CoreBaba
+conf t
+int fa0/9
+no sw
+ip add 192.168.147.200 255.255.255.224
+no shut
+end
